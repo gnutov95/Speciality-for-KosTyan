@@ -50,6 +50,18 @@ def json_return_author_decorator(func):
 
             if isinstance(author, JsonResponse):
                 return author
+            if isinstance(author, list):
+                author_list = []
+                for a in author:
+                    author_list.append({
+                        'id': a.id,
+                        'name': a.name,
+                        'bio': a.bio,
+                        'birth_date': a.birth_date,
+                    })
+                return JsonResponse(author_list, status=200, safe = False)
+
+
             return JsonResponse({
                 'status': 'success',
                 'message': f'Автор "{author.name}" успешно обновлен!',

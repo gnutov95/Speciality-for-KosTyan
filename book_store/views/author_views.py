@@ -1,9 +1,6 @@
 import json
-
-from django.core.handlers import exception
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404
-from django.template.backends import django
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
@@ -99,15 +96,6 @@ def update_authors(request, author_id) -> JsonResponse:
 def delete_authors(request, author_id: int) -> JsonResponse:
         author = get_object_or_404(Author, id=author_id)
 
-
-        # Сохраняем данные для ответа
-        author_data = {
-            'id': author.id,
-            'name': author.name,
-            'bio': author.bio,
-            'birth_date': author.birth_date,
-        }
-
         # Проверяем наличие книг (если есть связь)
         if hasattr(author, 'book_set') and author.book_set.exists():
             return JsonResponse({
@@ -118,14 +106,14 @@ def delete_authors(request, author_id: int) -> JsonResponse:
         author.delete()
 
         return JsonResponse({
-            'status': 'success',
-            'message': f'Автор "{author_data["name"]}" удален',
-            'deleted_author': author_data
+            'status': 'объект удален'
         }, status=200)
 
 
 
-def list_authors(request) -> JsonResponse:
+
+@json_return_author_decorator
+def list_authors(request) -> list[Author]:
 
     """
     todo переделать под многие
@@ -133,13 +121,5 @@ def list_authors(request) -> JsonResponse:
     :return:
     """
     authors = Author.objects.all().order_by('name')
-    authors_list = []
-    for author in authors:
-        authors_list.append({
-            'id': author.id,
-            'name': author.name,
-            'bio': author.bio,
-            'birth_date': author.birth_date,
-        })
-    return JsonResponse(authors_list,safe=False)
+    return list(authors)
 
