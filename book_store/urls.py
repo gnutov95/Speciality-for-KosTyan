@@ -7,6 +7,8 @@ urlpatterns = [
     path('authors/', author_views.list_authors, name='list_authors'),
     path('authors/<int:author_id>/', author_views.get_author, name='get_author'),
 
+    path('books/', book_views.list_books, name='list_books'),
+
     # === CREATE (создать автора) ===
     path('authors/create/', author_views.create_authors, name='create_authors'),
     path('book/create/', book_views.create_book, name='create_book'),

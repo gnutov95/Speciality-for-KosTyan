@@ -1,9 +1,8 @@
 import json
 
-from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
-from .models import Author
+from book_store.models import Author
 
 
 class AuthorAPITestCase(TestCase):

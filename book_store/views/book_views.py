@@ -20,7 +20,7 @@ from book_store.utils import json_decorator
 @csrf_exempt
 @require_http_methods(["POST"])
 @json_decorator
-def create_book(request):
+def create_book(request) -> JsonResponse:
 
         data = json.loads(request.body)
 
@@ -58,7 +58,7 @@ def create_book(request):
 @csrf_exempt
 @require_http_methods(["PUT", "PATCH"])
 @json_decorator
-def update_book(request, book_id):
+def update_book(request, book_id) -> JsonResponse:
     book = get_object_or_404(Book, id=book_id)
     data = json.loads(request.body)
 
@@ -88,4 +88,27 @@ def update_book(request, book_id):
 
 
 
+@csrf_exempt
+@require_http_methods(["GET"])
+def list_books(request) -> JsonResponse:
+    book = Book.objects.all().order_by('title')
+    list_fields = []
+    for b in book:
+        list_fields.append({
+            'id': b.id,
+            'title': b.title,
+            'author': b.author.name,
+            'year': b.year,
+            'genre': b.genre,
+            'price': float(b.price),
+            'stock': b.stock,
+        })
 
+    return JsonResponse(list_fields, safe=False)
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def delete_book(request, book_id) -> JsonResponse:
+    book = get_object_or_404(Book, id=book_id)
+    book.delete()
+    return JsonResponse({"status": "success deleted"}, status=200)

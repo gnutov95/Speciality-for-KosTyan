@@ -17,7 +17,7 @@ def author_list(request):
     return JsonResponse(list(authors),safe=False)
 
 
-def get_author(request, author_id):
+def get_author(request, author_id) -> JsonResponse:
 
     author = Author.objects.get(id=author_id)
     books = author.books.all()
@@ -49,7 +49,7 @@ def author_sort(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 @json_decorator
-def create_authors(request):
+def create_authors(request) -> JsonResponse:
 
         data = json.loads(request.body)
 
@@ -82,21 +82,16 @@ def create_authors(request):
 @csrf_exempt
 @require_http_methods(["PUT", "PATCH"])
 @json_decorator
-def update_authors(request, author_id):
+def update_authors(request, author_id) -> JsonResponse:
 
         author = get_object_or_404(Author, id=author_id)
         data = json.loads(request.body)
         if not data.get('name'):
             return JsonResponse({'error': 'Поле name - обязательно'}, status=400)
-        if 'name' in data:
-            author.name = data['name']
-
-        if 'bio' in data:
-            author.bio = data['bio']
-
-        if 'birth_date' in data:
-            author.birth_date = data['birth_date']
-
+        fields = ['name', 'bio', 'birth_date']
+        for field in fields:
+            if field in data:
+                setattr(author, field, data[field])
         author.save()
 
 
@@ -117,7 +112,7 @@ def update_authors(request, author_id):
 @csrf_exempt
 @require_http_methods(["DELETE"])
 @json_decorator
-def delete_authors(request, author_id: int):
+def delete_authors(request, author_id: int) -> JsonResponse:
         author = get_object_or_404(Author, id=author_id)
 
 
