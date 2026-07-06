@@ -2,8 +2,34 @@ import json
 
 from django.http import JsonResponse
 
-from book_store.models import Book
-
+def return_author_list_decorator(func):
+    def wrapper(*args, **kwargs):
+        try:
+            author = func(*args, **kwargs)
+            if isinstance(author, JsonResponse):
+                return author
+            result = []
+            for a in author:
+                result.append({
+                    'book': {
+                        'id': a.id,
+                        'title': a.title,
+                        'year': a.year,
+                        'genre': a.genre,
+                        'price': float(a.price),
+                        'stock': a.stock,
+                    },
+                    'author': {
+                        'id': a.author.id,
+                        'name': a.author.name,
+                        'bio': a.author.bio,
+                        'birth_date': a.author.birth_date,
+                    }
+                })
+            return JsonResponse(result, status=200, safe = False)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return wrapper
 
 def json_decorator(func):
     def wrapper(*args, **kwargs):

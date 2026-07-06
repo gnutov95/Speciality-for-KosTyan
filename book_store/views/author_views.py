@@ -1,11 +1,13 @@
 import json
+
+
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from book_store.models import Author
-from book_store.utils import json_decorator, json_return_author_decorator
+from book_store.models import Author,Book
+from book_store.utils import json_decorator, json_return_author_decorator, return_author_list_decorator
 
 
 def author_list(request):
@@ -112,7 +114,7 @@ def delete_authors(request, author_id: int) -> JsonResponse:
 
 
 
-@json_return_author_decorator
+@return_author_list_decorator
 def list_authors(request) -> list[Author]:
 
     """
@@ -120,6 +122,6 @@ def list_authors(request) -> list[Author]:
     :param request:
     :return:
     """
-    authors = Author.objects.all().order_by('name')
+    authors = Book.objects.select_related('author').all().order_by('id')
     return list(authors)
 
