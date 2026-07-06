@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 class Author(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Имя")
+    name = models.CharField(max_length=100, verbose_name="Имя", unique=True)
     bio = models.TextField(blank=True, verbose_name="Био")
     birth_date = models.DateField(null=True, blank=True, verbose_name="Дата рождения")
 

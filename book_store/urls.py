@@ -1,20 +1,19 @@
-
-
-from django.contrib import admin
 from django.urls import path
-import book_store.views as views
+import book_store.views.author_views as views
+from book_store.views import book_views, author_views
 
 urlpatterns = [
     # === READ (список всех авторов) ===
-    path('authors/', views.list_authors, name='list_authors'),
-    path('authors/<int:author_id>/', views.get_author, name='get_author'),
+    path('authors/', author_views.list_authors, name='list_authors'),
+    path('authors/<int:author_id>/', author_views.get_author, name='get_author'),
 
     # === CREATE (создать автора) ===
-    path('authors/create/', views.create_authors, name='create_authors'),
+    path('authors/create/', author_views.create_authors, name='create_authors'),
+    path('book/create/', book_views.create_book, name='create_book'),
 
     # === UPDATE (обновить автора) ===
-    path('authors/<int:author_id>/update/', views.update_authors, name='update_authors'),
+    path('authors/<int:author_id>/update/', author_views.update_authors, name='update_authors'),
 
     # === DELETE (удалить автора) ===
-    path('authors/<int:author_id>/delete/', views.delete_authors, name='delete_authors'),
+    path('authors/<int:author_id>/delete/', author_views.delete_authors, name='delete_authors'),
 ]

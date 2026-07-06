@@ -7,7 +7,7 @@ from django.template.backends import django
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from .models import Author
+from book_store.models import Author
 
 def author_list(request):
     authors = Author.objects.all().values('id', 'name', 'bio', 'birth_date')

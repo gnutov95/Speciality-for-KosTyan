@@ -61,12 +61,12 @@ class AuthorAPITestCase(TestCase):
         self.assertEqual(response.status_code, 201)
 
         # Проверяем, что автор создался в БД
-        self.assertTrue(Author.objects.filter(name="Антон Чехов").exists())
+        self.assertTrue(Author.objects.filter(name=data.get("name")).exists())
 
         # Проверяем ответ
         response_data = response.json()
         self.assertEqual(response_data['status'], 'success')
-        self.assertEqual(response_data['author']['name'], "Антон Чехов")
+        self.assertEqual(response_data['author']['name'], data.get("name"))
 
     def test_create_author_missing_name(self):
 
@@ -105,8 +105,8 @@ class AuthorAPITestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertEqual(data['id'], self.author1.id)
-        self.assertEqual(data['name'], "Лев Толстой")
-        self.assertEqual(data['bio'], "Великий русский писатель")
+        self.assertEqual(data['name'], self.author1.name)
+        self.assertEqual(data['bio'], self.author1.bio)
 
     def test_get_author_not_found(self):
 
@@ -133,13 +133,13 @@ class AuthorAPITestCase(TestCase):
 
         # Проверяем, что данные обновились в БД
         self.author1.refresh_from_db()
-        self.assertEqual(self.author1.name, "Лев Николаевич Толстой")
-        self.assertEqual(self.author1.bio, "Великий русский писатель и философ")
+        self.assertEqual(self.author1.name, data.get("name"))
+        self.assertEqual(self.author1.bio, data.get("bio"))
 
         # Проверяем ответ
         response_data = response.json()
         self.assertEqual(response_data['status'], 'success')
-        self.assertEqual(response_data['author']['name'], "Лев Николаевич Толстой")
+        self.assertEqual(response_data['author']['name'], data.get("name"))
 
     def test_update_author_partial(self):
 
@@ -157,7 +157,7 @@ class AuthorAPITestCase(TestCase):
 
         # Проверяем, что только имя обновилось
         self.author1.refresh_from_db()
-        self.assertEqual(self.author1.name, "Л. Н. Толстой")
+        self.assertEqual(self.author1.name, data.get("name"))
         self.assertEqual(self.author1.bio, "Великий русский писатель")  # Не изменилось
 
     def test_update_author_not_found(self):
