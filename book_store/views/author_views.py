@@ -8,6 +8,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from book_store.models import Author
+from book_store.utils import json_decorator
+
 
 def author_list(request):
     authors = Author.objects.all().values('id', 'name', 'bio', 'birth_date')
@@ -46,8 +48,9 @@ def author_sort(request):
 
 @csrf_exempt
 @require_http_methods(["POST"])
+@json_decorator
 def create_authors(request):
-    try:
+
         data = json.loads(request.body)
 
         if not data.get('name'):
@@ -74,24 +77,13 @@ def create_authors(request):
             }
         }, status=201)
 
-    except json.JSONDecodeError:
-        return JsonResponse(
-            {'error': 'Неверный формат JSON!'},
-            status=400
-        )
-    except Exception as e:
-        return JsonResponse(
-            {'error': str(e)},
-            status=400
-        )
-
 
 
 @csrf_exempt
 @require_http_methods(["PUT", "PATCH"])
+@json_decorator
 def update_authors(request, author_id):
 
-    try:
         author = get_object_or_404(Author, id=author_id)
         data = json.loads(request.body)
         if not data.get('name'):
@@ -119,22 +111,13 @@ def update_authors(request, author_id):
             }
         }, status=200)
 
-    except json.JSONDecodeError:
-        return JsonResponse(
-        {'error': 'Неверный формат JSON!'},
-        status=400
-    )
-    except Exception as e:
-        return JsonResponse(
-        {'error': str(e)},
-        status=400
-    )
+
 
 
 @csrf_exempt
 @require_http_methods(["DELETE"])
+@json_decorator
 def delete_authors(request, author_id: int):
-    try:
         author = get_object_or_404(Author, id=author_id)
 
 
@@ -161,8 +144,6 @@ def delete_authors(request, author_id: int):
             'deleted_author': author_data
         }, status=200)
 
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=400)
 
 
 def list_authors(request) -> JsonResponse:

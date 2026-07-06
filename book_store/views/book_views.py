@@ -5,6 +5,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from book_store.models import Book, Author
+from book_store.utils import json_decorator
+
+
 # Название переменной	verbose_name (русское название)
 # title	"Название"
 # author	"Автор"
@@ -15,8 +18,9 @@ from book_store.models import Book, Author
 
 @csrf_exempt
 @require_http_methods(["POST"])
+@json_decorator
 def create_book(request):
-    try:
+
         data = json.loads(request.body)
 
         if 'title' not in data:
@@ -49,8 +53,6 @@ def create_book(request):
             }
         })
 
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
 
 
 
