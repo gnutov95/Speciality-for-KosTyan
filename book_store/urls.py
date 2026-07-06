@@ -20,4 +20,5 @@ urlpatterns = [
 
     # === DELETE (удалить автора) ===
     path('authors/<int:author_id>/delete/', author_views.delete_authors, name='delete_authors'),
+    path('book/<int:book_id>/delete/', book_views.delete_book, name='delete_book'),
 ]

@@ -36,26 +36,29 @@ class Book(models.Model):
 
 User = get_user_model()
 
+
 class Customer(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         verbose_name="Пользователь"
     )
     phone = models.CharField(
-        max_length=11,
+        max_length=20,
         blank=True,
         null=True,
         verbose_name="Телефон"
     )
-    address = models.CharField(
-        max_length=64,
+    address = models.TextField(
         blank=True,
         null=True,
-        verbose_name="Адресс доставки"
+        verbose_name="Адрес доставки"
     )
+
     def __str__(self):
-        return self.user.username
+        return self.user.username if self.user else f"Гость #{self.id}"
 
     class Meta:
         verbose_name = "Клиент"

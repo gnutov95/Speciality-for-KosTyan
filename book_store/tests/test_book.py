@@ -33,3 +33,5 @@ class BookAPITestCase(TestCase):
         self.detail_url = reverse('get_book', args=[self.book1.id])
         self.update_url = reverse('update_book', args=[self.book1.id])
         self.delete_url = reverse('delete_book', args=[self.book1.id])
+
+
