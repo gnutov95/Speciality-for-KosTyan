@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.urls import reverse
 
 from book_store.models import Book
 
@@ -27,8 +28,8 @@ class BookAPITestCase(TestCase):
         )
 
 
-        # self.list_url = reverse('list_authors')
-        # self.create_url = reverse('create_authors')
-        # self.detail_url = reverse('get_author', args=[self.author1.id])
-        # self.update_url = reverse('update_authors', args=[self.author1.id])
-        # self.delete_url = reverse('delete_authors', args=[self.author1.id])
+        self.list_url = reverse('list_books')
+        self.create_url = reverse('create_book')
+        self.detail_url = reverse('get_book', args=[self.book1.id])
+        self.update_url = reverse('update_book', args=[self.book1.id])
+        self.delete_url = reverse('delete_book', args=[self.book1.id])

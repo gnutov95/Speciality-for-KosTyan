@@ -6,6 +6,7 @@ urlpatterns = [
     # === READ (список всех авторов) ===
     path('authors/', author_views.list_authors, name='list_authors'),
     path('authors/<int:author_id>/', author_views.get_author, name='get_author'),
+    path('books/<int:book_id>/', book_views.get_book, name='get_book'),
 
     path('books/', book_views.list_books, name='list_books'),
 

@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from book_store.models import Author
-from book_store.utils import json_decorator
+from book_store.utils import json_decorator, json_return_author_decorator
 
 
 def author_list(request):
@@ -48,6 +48,7 @@ def author_sort(request):
 
 @csrf_exempt
 @require_http_methods(["POST"])
+@json_return_author_decorator
 @json_decorator
 def create_authors(request) -> JsonResponse:
 
@@ -66,21 +67,13 @@ def create_authors(request) -> JsonResponse:
         )
         author.save()
 
-        return JsonResponse({
-            'status': 'success',
-            'message': 'Автор успешно создан!',
-            'author': {
-                'id': author.id,
-                'name': author.name,
-                'bio': author.bio,
-                'birth_date': author.birth_date,
-            }
-        }, status=201)
+        return author
 
 
 
 @csrf_exempt
 @require_http_methods(["PUT", "PATCH"])
+@json_return_author_decorator
 @json_decorator
 def update_authors(request, author_id) -> JsonResponse:
 
@@ -95,16 +88,7 @@ def update_authors(request, author_id) -> JsonResponse:
         author.save()
 
 
-        return JsonResponse({
-            'status': 'success',
-            'message': f'Автор "{author.name}" успешно обновлен!',
-            'author': {
-                'id': author.id,
-                'name': author.name,
-                'bio': author.bio,
-                'birth_date': author.birth_date,
-            }
-        }, status=200)
+        return author
 
 
 

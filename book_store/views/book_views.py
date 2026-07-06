@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from book_store.models import Book, Author
-from book_store.utils import json_decorator
+from book_store.utils import json_decorator, json_returned_book_decorator
 
 
 # Название переменной	verbose_name (русское название)
@@ -19,6 +19,7 @@ from book_store.utils import json_decorator
 
 @csrf_exempt
 @require_http_methods(["POST"])
+@json_returned_book_decorator
 @json_decorator
 def create_book(request) -> JsonResponse:
 
@@ -40,23 +41,12 @@ def create_book(request) -> JsonResponse:
         )
         book.save()
 
-        return JsonResponse({
-            'status': 'success',
-            'messega': 'Книга успешно создана!',
-            'book': {
-                'id': book.id,
-                'title': book.title,
-                'author': book.author.name,
-                'year': book.year,
-                'genre': book.genre,
-                'price': book.price,
-                'stock': book.stock,
-            }
-        })
+        return book
 
 
 @csrf_exempt
 @require_http_methods(["PUT", "PATCH"])
+@json_returned_book_decorator
 @json_decorator
 def update_book(request, book_id) -> JsonResponse:
     book = get_object_or_404(Book, id=book_id)
@@ -72,19 +62,7 @@ def update_book(request, book_id) -> JsonResponse:
             setattr(book, field, data[field])
 
     book.save()
-    return JsonResponse({
-        'status': 'success',
-        'message': 'Книга успешно обновлена!',
-        'book': {
-            'id': book.id,
-            'title': book.title,
-            'author': book.author.name,
-            'year': book.year,
-            'genre': book.genre,
-            'price': float(book.price),
-            'stock': book.stock,
-        }
-    })
+    return book
 
 
 
@@ -105,10 +83,18 @@ def list_books(request) -> JsonResponse:
         })
 
     return JsonResponse(list_fields, safe=False)
-
 @csrf_exempt
 @require_http_methods(["GET"])
+@json_returned_book_decorator
+@json_decorator
+def get_book(request, book_id) -> JsonResponse:
+    book = get_object_or_404(Book, id=book_id)
+    return book
+
+@csrf_exempt
+@require_http_methods(["DELETE"])
 def delete_book(request, book_id) -> JsonResponse:
     book = get_object_or_404(Book, id=book_id)
     book.delete()
     return JsonResponse({"status": "success deleted"}, status=200)
+
