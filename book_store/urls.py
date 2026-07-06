@@ -13,6 +13,7 @@ urlpatterns = [
 
     # === UPDATE (обновить автора) ===
     path('authors/<int:author_id>/update/', author_views.update_authors, name='update_authors'),
+    path('book/<int:book_id>/update/', book_views.update_book, name='update_book'),
 
     # === DELETE (удалить автора) ===
     path('authors/<int:author_id>/delete/', author_views.delete_authors, name='delete_authors'),

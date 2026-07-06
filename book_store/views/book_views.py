@@ -1,6 +1,7 @@
 import json
 
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
@@ -52,6 +53,38 @@ def create_book(request):
                 'stock': book.stock,
             }
         })
+
+
+@csrf_exempt
+@require_http_methods(["PUT", "PATCH"])
+@json_decorator
+def update_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    data = json.loads(request.body)
+
+    if 'title' not in data:
+        return JsonResponse({"error": "Поле title обязательно!"}, status=400)
+
+    allowed_fields = ['title', 'year', 'genre', 'price', 'stock']
+
+    for field in allowed_fields:
+        if field in data:
+            setattr(book, field, data[field])
+
+    book.save()
+    return JsonResponse({
+        'status': 'success',
+        'message': 'Книга успешно обновлена!',
+        'book': {
+            'id': book.id,
+            'title': book.title,
+            'author': book.author.name,
+            'year': book.year,
+            'genre': book.genre,
+            'price': float(book.price),
+            'stock': book.stock,
+        }
+    })
 
 
 
